@@ -33,6 +33,3 @@ const run = index => {
 };
 
 run(1);
-
-// Keep alive for 24 hours
-setTimeout(console.log, minsToMs(24 * 60));
