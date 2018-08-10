@@ -1,6 +1,6 @@
 (function() {
   const svg = d3.select('#line'),
-    margin = { top: 20, right: 80, bottom: 30, left: 30 };
+    margin = { top: 10, right: 60, bottom: 30, left: 30 };
   const outer = svg.node().getBoundingClientRect();
   const inner = {
     width: outer.width - margin.left - margin.right,
@@ -15,20 +15,17 @@
     z = d3.scaleOrdinal(d3.schemeCategory10);
 
   const line = d3.line()
+    .curve(d3.curveBasis)
     .x(function(d) { return x(d.time); })
     .y(function(d) { return y(d.speed); });
 
   d3.csv('data.csv', type).then(data => {
-    const speeds = data.columns.slice(1).map(function(id) {
-      return {
-        id: id,
-        values: data.map(function(d) {
-          return {time: d.time, speed: d[id]};
-        })
-      };
-    });
+    const speeds = data.columns.slice(1).map(id => ({
+      id,
+      values: data.map(d=> ({ time: d.time, speed: d[id] }))
+    }));
 
-    x.domain(d3.extent(data, function(d) { return d.time; }));
+    x.domain(d3.extent(data, d => d.time));
 
     y.domain([
       d3.min(speeds, c => d3.min(c.values, d => d.speed)),
@@ -66,10 +63,24 @@
     speed.append('text')
       .datum(d => ({ id: d.id, value: d.values[d.values.length - 1] }))
       .attr('transform', d => `translate(${x(d.value.time)},${y(d.value.speed)})`)
-      .attr('x', 3)
+      .attr('x', 8)
       .attr('dy', '0.35em')
       .style('font', '10px sans-serif')
       .text(d => d.id);
+
+    g.selectAll('circle')
+      .data(speeds.reduce((a, b) =>
+        a.concat(...b.values.map(d => {
+          d.id = b.id;
+          return d;
+        })
+      ), []))
+      .enter()
+      .append('circle')
+      .attr('r', '2')
+      .attr('cx', d => x(d.time))
+      .attr('cy', d => y(d.speed))
+      .style('fill', d => z(d.id));
   });
 
   function type(d, _, columns) {

@@ -1,10 +1,10 @@
+const interval = 10; // minutes
+const destination = 'data.csv'; // data log file
+
 const fs = require('fs');
 const speedTest = require('speedtest-net');
 process.env['HTTP_PROXY'] =  process.env['http_proxy'] = 'http://proxy:3128';
 const express = require('express');
-
-const interval = 10; // minutes
-const destination = 'data.csv'; // data log file
 
 // Get current datetime
 const time = () => new Date().toISOString();
