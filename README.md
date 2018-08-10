@@ -11,3 +11,5 @@ npm install
 npm start
 ```
 Results are logged to data.csv. You can change the interval and the log file in index.js.
+
+Running the app will start a web server to display the result in a chart, viewable at http://localhost:1337.

@@ -1,14 +1,24 @@
 const fs = require('fs');
 const speedTest = require('speedtest-net');
 process.env['HTTP_PROXY'] =  process.env['http_proxy'] = 'http://proxy:3128';
+const express = require('express');
 
 const interval = 10; // minutes
 const destination = 'data.csv'; // data log file
 
+// Get current datetime
 const time = () => new Date().toISOString();
 
+// Convert minutes to milliseconds
 const minsToMs = m => m * 60 * 1000;
 
+// Run dataviz web server
+const app = express();
+app.use(express.static(__dirname));
+app.listen(1337);
+console.log('Report server is running at http://localhost:1337');
+
+// Append new line to data file
 const appendData = (data, index) => {
   const now = time();
   const newDatum = `\n${now},${data.speeds.download},${data.speeds.upload}`;
@@ -32,4 +42,5 @@ const run = index => {
   test.on('error', console.error);
 };
 
+// Init
 run(1);
