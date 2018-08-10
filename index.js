@@ -11,7 +11,7 @@ const minsToMs = m => m * 60 * 1000;
 
 const appendData = (data, index) => {
   const now = time();
-  const newDatum = `\n${now}, ${data.speeds.download}, ${data.speeds.upload}`;
+  const newDatum = `\n${now},${data.speeds.download},${data.speeds.upload}`;
 
   fs.appendFile(destination, newDatum, function (error) {
     if (error) throw error;
